@@ -722,4 +722,18 @@ public class VehiclePriceListBean implements Serializable {
     public RichSelectOneChoice getFormatBind() {
         return formatBind;
     }
+	
+	--adding a new method in the end
+	public void hellowWorld2(){
+		
+		
+		
+		
+		
+		
+		
+		
+	}
+	
+	
 }
