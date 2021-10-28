@@ -898,10 +898,10 @@
     <ViewUsage
         Name="ForCodeRO1"
         ViewObjectName="dms.sales.model.view.readonly.ForCodeRO"/>
-						  
-									
-																				  
-				
+	<ViewCriteriaUsage
+            Name="ForCodeROCriteria"
+            FullName="dms.sales.model.view.readonly.ForCodeRO.ForCodeROCriteria"/>
+    </ViewUsage>
     <ViewUsage
         Name="NewCarMasterRO1"
         ViewObjectName="dms.sales.model.view.readonly.NewCarMasterRO"/>
@@ -2015,6 +2015,10 @@
     <ViewUsage
         Name="NexaMISReportExcelRO1"
         ViewObjectName="dms.sales.model.view.readonly.reports.NexaMISReportExcelRO"/>
+	<ViewUsage
+        Name="CustomerBookingTVO1"
+        ViewObjectName="dms.sales.model.view.readonly.reports.CustomerBookingTVO"/>
+
     <ViewLinkUsage
         Name="ShComplaintsLK1"
         ViewLinkObjectName="dms.sales.model.view.viewlink.ShComplaintsLK"
@@ -23499,7 +23503,7 @@
                 Type="java.lang.String"/>
         </Method>
         <Method
-            Name="saveGrnDetails1"
+            Name="saveGrnDetails"
             MethodName="saveGrnDetails">
             <Return
                 Name="_return_type_"
@@ -24608,6 +24612,7 @@
             MethodName="PkgCallForAllIndiaSchemeDetailsPDF">
             <Return
                 Name="_return_type_"
+                Name="_return_type_"
                 Type="void"/>
             <Parameter
                 Name="zone"
@@ -24625,13 +24630,13 @@
                 Name="toDate"
                 Type="java.lang.String"/>
         </Method>
-			   
-												 
-														
-				   
-									
-							 
-				 
+		<Method
+            Name="resetValuesOfIndentRadioButton"
+            MethodName="resetValuesOfIndentRadioButton">
+            <Return
+                Name="_return_type_"
+                Type="void"/>
+        </Method>
     </ClientInterface>
     <ResourceBundle>
         <JavaResourceBundle
