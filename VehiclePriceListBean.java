@@ -65,6 +65,14 @@ public class VehiclePriceListBean implements Serializable {
     public VehiclePriceListBean() {
     }
 
+--This line is added to practice git, i am writing a new method below
+			public void helloWorld(){
+
+
+
+
+
+			}
     public void initMethod() {
         try{
 //            MsilSessionScope.setGlobalValues();
