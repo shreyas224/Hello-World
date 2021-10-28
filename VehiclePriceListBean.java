@@ -67,9 +67,10 @@ public class VehiclePriceListBean implements Serializable {
 
 --This line is added to practice git, i am writing a new method below
 			public void helloWorld(){
-
-
-
+r.setAttribute("AsOnDate", currentDate);
+r.setAttribute("BalanceAmount", "0");
+amDlrLoc.applyViewCriteria(vc);
+amDlrLoc.executeQuery();
 
 
 			}
