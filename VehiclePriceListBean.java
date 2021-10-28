@@ -67,6 +67,18 @@ public class VehiclePriceListBean implements Serializable {
 
 --This line is added to practice git, i am writing a new method below
 			public void helloWorld(){
+//            session.setAttribute("principalMapCd", 1);
+//            session.setAttribute("dealerMapCd", 10019);
+//            session.setAttribute("parentGroupCd", "CHOWG");
+
+
+//            session.setAttribute("parentGroupCd", "CHOWG");
+
+
+            String reportName = (String) ADFUtils.evaluateEL("#{pageFlowScope.reportName}");
+            LOGGER.info("inside init method, report name is ::: " + reportName);
+
+
 
 
 
