@@ -5747,6 +5747,10 @@ System.out.println("value of flag"+flag);
                 r.setAttribute("ExchCancDate", vDate);
                 r.setAttribute("ExchCancType", "DLR");
                 r.setAttribute("ExchangeFlag", "C");
+										  
+											
+										 
+										   
                 String sql7 =
                     "SELECT /*+ INDEX(INV SYS_C004975) */ ge.card_num FROM gd_loyalty_trans gd,gd_loyalty_enrol ge,sh_invoice inv" +
                     " WHERE gd.trans_num='" + (String) r.getAttribute("InvNum") + "' AND inv.parent_group= '" + parent +
@@ -15051,6 +15055,17 @@ System.out.println("value of flag"+flag);
             String error_msg = st.getString(9);
             int err = st.getInt(8);
             ResultSet cursor = st.getObject(7, ResultSet.class);
+								 
+																				
+																									  
+																					 
+																		 
+																								  
+										  
+													   
+																			
+														
+									
             //                        System.out.println("CursorNext***"+cursor.next());
             while (cursor.next()) {
                 Row createAddPartRow = trainResults.createRow();
@@ -15086,6 +15101,8 @@ System.out.println("value of flag"+flag);
                 if (redcount > 0) {
                     for (int i = 1; i < redcount; i++)
                         createAddPartRow.setAttribute("RedFlag", "Y");
+												
+												  
                 }
                 trainResults.insertRow(createAddPartRow);
 //                this.getDBTransaction().commit();
@@ -16723,6 +16740,7 @@ System.out.println("value of flag"+flag);
         if (lines != null && lines.length > 0) {
             LOGGER.info("Params Corp Code : " + lines[0] + " Group Code : " + params.get("groupCode") +
                         "In Validation");
+							   
             ViewObjectImpl mulCorpVO = this.getMulCorporateVO1();
             tempRow.setAttribute("CorporateName", lines[1]);
             tempRow.setAttribute("CorporateCode", lines[0]);
@@ -16750,6 +16768,7 @@ System.out.println("value of flag"+flag);
                 Error = " Not Found in Corporate Master"; //CP_CODE||' Not Found in Corporate Master'
             }
             ViewObjectImpl gropDVO = this.getGmGropdVO1();
+									 
             ViewCriteria gropDVC = gropDVO.getViewCriteriaManager().getViewCriteria("CpCodeCheckVC");
             VariableValueManager gropDVVM = gropDVC.ensureVariableManager();
             gropDVVM.setVariableValue("bind_cp_code", lines[0]);
@@ -16779,6 +16798,7 @@ System.out.println("value of flag"+flag);
             tempRow.setAttribute("Error", Error);
             tempGropdSTVO.insertRow(tempRow);
         }
+		 
         return params;
     }
 
@@ -27812,6 +27832,18 @@ System.out.println("BookFollowedby---" + BookFollowedby);
             String dealer_type_value = "STN", dealer_gst = null, to_dealer_gst = null;
             ViewObjectImpl voIssue = this.getStStktrIssVO1();
             StStktrIssVORowImpl rwIssue = (StStktrIssVORowImpl) voIssue.getCurrentRow();
+
+				 
+													
+				 
+																				
+												   
+				 
+								   
+									   
+									
+			 
+   
             try {
                 dealer_gst = dealerGstStockIssue(dealer_map, loc_code, parent_group);
                 System.out.println("Dealer Gst:" + dealer_gst);
@@ -30018,6 +30050,9 @@ System.out.println("ret val is:::::"+ret_val);
         CallableStatement st = null;
         
         ViewObjectImpl voiRec= this.getReceiptEOView1();
+														 
+		
+		
         String rec_num=null;
         Row rwRec=voiRec.getCurrentRow();
         if(rwRec.getAttribute("StkRecNum")==null)
@@ -30030,7 +30065,14 @@ System.out.println("ret val is:::::"+ret_val);
                 
                 ViewObjectImpl voiCurrDate = this.getSfGetTimeCurrRO1();
                 Row voiCurrRw = voiCurrDate.first();
+											 
+				 
                 rwRec.setAttribute("RecdDate", voiCurrRw.getAttribute("CurrDate"));
+				 
+												  
+				 
+																											
+				 
                 rwRec.setAttribute("ModifiedBy",user_code);
                 java.sql.Timestamp datetime = new java.sql.Timestamp(System.currentTimeMillis());
                 rwRec.setAttribute("ModifiedDate", datetime);
@@ -36503,6 +36545,24 @@ System.out.println("rs11.getString(\"SHIP_VILLAGE\") "+rs11.getString("SHIP_VILL
      */
     public ViewObjectImpl getNexaMISReportExcelRO1() {
         return (ViewObjectImpl) findViewObject("NexaMISReportExcelRO1");
+								 
+								  
+								   
+								 
+									 
+							   
+								   
+								
+								  
+								  
+									  
+							   
+								   
+								
+		 
+		
+		
     }
+		
 }
 
