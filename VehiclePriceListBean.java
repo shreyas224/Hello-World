@@ -5031,7 +5031,7 @@ System.out.println("value of flag"+flag);
                     }
                     try {
                         String vehicleUpdate =
-                            "UPDATE GM_VIN SET EXT_WARRANTY_YN = 'N', MODIFIED_DATE=SYSDATE , WAR_SLAB_CD = null , ORG_WAR_EXP_DT = null WHERE VIN ='" + Vin + "'";
+                            "UPDATE GM_VIN SET EXT_WARRANTY_YN = 'N', MODIFIED_DATE=SYSDATE WHERE VIN ='" + Vin + "'";
                         // 2. Create the CallableStatement for the PL/SQL block
                         st = trx.createCallableStatement(vehicleUpdate, 0);
                         st.executeUpdate();
@@ -5740,17 +5740,13 @@ System.out.println("value of flag"+flag);
                                                                                 .Date
                                                                                 .getCurrentDate());
                 LOGGER.info("errMsg5" + errMsg + user + vDate);
-                r.setAttribute("CancelDate", null);
+                r.setAttribute("CancelDate", vDate);
                 r.setAttribute("ModifiedBy", user);
                 r.setAttribute("ModifiedDate", vDate);
                 r.setAttribute("ExchCancBy", user);
                 r.setAttribute("ExchCancDate", vDate);
                 r.setAttribute("ExchCancType", "DLR");
                 r.setAttribute("ExchangeFlag", "C");
-				r.setAttribute("CancelTcsFlag", null);
-				r.setAttribute("CancelChargeAmt", null);
-				r.setAttribute("CancelInvAmt", null);
-				r.setAttribute("CancelRoundOff", null);
                 String sql7 =
                     "SELECT /*+ INDEX(INV SYS_C004975) */ ge.card_num FROM gd_loyalty_trans gd,gd_loyalty_enrol ge,sh_invoice inv" +
                     " WHERE gd.trans_num='" + (String) r.getAttribute("InvNum") + "' AND inv.parent_group= '" + parent +
@@ -11438,7 +11434,7 @@ System.out.println("value of flag"+flag);
                                                                                                                                        .equalsIgnoreCase("R03"))
                             createDocDtl.setAttribute("CtrlMsg", "CTRL+L");
                         createDocDtl.setAttribute("SrNo", srno.toString());
-                        srno = srno+1;
+                        srno = srno + 1;
                         comClmDocDtl.insertRow(createDocDtl);
                     }
                     cursor.close();
@@ -15055,17 +15051,6 @@ System.out.println("value of flag"+flag);
             String error_msg = st.getString(9);
             int err = st.getInt(8);
             ResultSet cursor = st.getObject(7, ResultSet.class);
-            int redflagcount = 0;
-            ViewObjectImpl redCountVoImpl = this.getRedCountSmParticipantsRO1();
-            redCountVoImpl.setNamedWhereClauseParam("bind_calndrId", (String) mapVal.get("CalndrId"));
-            redCountVoImpl.setNamedWhereClauseParam("bind_dealerMapCD", dealerMapCd);
-            redCountVoImpl.setNamedWhereClauseParam("bind_locCd", locCd);
-            redCountVoImpl.setNamedWhereClauseParam("bind_prg_Id", (String) mapVal.get("PgrmId"));
-            redCountVoImpl.executeQuery();
-            Row redCountVORow = redCountVoImpl.first();
-            int redcount = (Integer) redCountVORow.getAttribute("RedCount");
-            System.out.println(redcount+"--redcount--");
-            redflagcount = redcount;
             //                        System.out.println("CursorNext***"+cursor.next());
             while (cursor.next()) {
                 Row createAddPartRow = trainResults.createRow();
@@ -15090,19 +15075,17 @@ System.out.println("value of flag"+flag);
                 } else {
                     createAddPartRow.setAttribute("SelectYN", "N");
                 }
-																					
-																										  
-																						 
-																			 
-																									  
-											  
-														   
-																				
-                if (redflagcount >0) {
-                        System.out.println("redflag in loop");
+                ViewObjectImpl redCountVoImpl = this.getRedCountSmParticipantsRO1();
+                redCountVoImpl.setNamedWhereClauseParam("bind_calndrId", (String) mapVal.get("CalndrId"));
+                redCountVoImpl.setNamedWhereClauseParam("bind_dealerMapCD", dealerMapCd);
+                redCountVoImpl.setNamedWhereClauseParam("bind_locCd", locCd);
+                redCountVoImpl.setNamedWhereClauseParam("bind_prg_Id", (String) mapVal.get("PgrmId"));
+                redCountVoImpl.executeQuery();
+                Row redCountVORow = redCountVoImpl.first();
+                int redcount = (Integer) redCountVORow.getAttribute("RedCount");
+                if (redcount > 0) {
+                    for (int i = 1; i < redcount; i++)
                         createAddPartRow.setAttribute("RedFlag", "Y");
-//                        redcount = redcount-1;
-                    redflagcount = redflagcount-1;
                 }
                 trainResults.insertRow(createAddPartRow);
 //                this.getDBTransaction().commit();
@@ -16740,9 +16723,8 @@ System.out.println("value of flag"+flag);
         if (lines != null && lines.length > 0) {
             LOGGER.info("Params Corp Code : " + lines[0] + " Group Code : " + params.get("groupCode") +
                         "In Validation");
-            if(lines[0]!=null){
             ViewObjectImpl mulCorpVO = this.getMulCorporateVO1();
-//            tempRow.setAttribute("CorporateName", lines[1]);
+            tempRow.setAttribute("CorporateName", lines[1]);
             tempRow.setAttribute("CorporateCode", lines[0]);
             tempRow.setAttribute("Active", "Y");
             if (params.get("isDuplicate") != null && "Y".equalsIgnoreCase((String) params.get("isDuplicate"))) {
@@ -16768,11 +16750,10 @@ System.out.println("value of flag"+flag);
                 Error = " Not Found in Corporate Master"; //CP_CODE||' Not Found in Corporate Master'
             }
             ViewObjectImpl gropDVO = this.getGmGropdVO1();
-            gropDVO.setRangeSize(-1);
             ViewCriteria gropDVC = gropDVO.getViewCriteriaManager().getViewCriteria("CpCodeCheckVC");
             VariableValueManager gropDVVM = gropDVC.ensureVariableManager();
             gropDVVM.setVariableValue("bind_cp_code", lines[0]);
-            gropDVVM.setVariableValue("bind_grop_code", (String)getGmGrophVO1().getCurrentRow().getAttribute("GropCode"));
+            gropDVVM.setVariableValue("bind_grop_code", params.get("groupCode"));
             gropDVO.applyViewCriteria(gropDVC);
             gropDVO.executeQuery();
             if (gropDVO.getEstimatedRowCount() > 0) {
@@ -16797,7 +16778,6 @@ System.out.println("value of flag"+flag);
             }
             tempRow.setAttribute("Error", Error);
             tempGropdSTVO.insertRow(tempRow);
-        }
         }
         return params;
     }
@@ -27832,18 +27812,6 @@ System.out.println("BookFollowedby---" + BookFollowedby);
             String dealer_type_value = "STN", dealer_gst = null, to_dealer_gst = null;
             ViewObjectImpl voIssue = this.getStStktrIssVO1();
             StStktrIssVORowImpl rwIssue = (StStktrIssVORowImpl) voIssue.getCurrentRow();
-
-            try {
-                if(rwIssue.getStktrIssDate()==null )
-                {
-                Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-                rwIssue.setStktrIssDate(timestamp);
-                }
-            } catch (Exception e) {
-                // TODO: Add catch code
-                e.printStackTrace();
-            }
-			
             try {
                 dealer_gst = dealerGstStockIssue(dealer_map, loc_code, parent_group);
                 System.out.println("Dealer Gst:" + dealer_gst);
@@ -30050,9 +30018,6 @@ System.out.println("ret val is:::::"+ret_val);
         CallableStatement st = null;
         
         ViewObjectImpl voiRec= this.getReceiptEOView1();
-        ViewObjectImpl voiRecDual= this.getReceiptTVO1();
-        
-        
         String rec_num=null;
         Row rwRec=voiRec.getCurrentRow();
         if(rwRec.getAttribute("StkRecNum")==null)
@@ -30065,14 +30030,7 @@ System.out.println("ret val is:::::"+ret_val);
                 
                 ViewObjectImpl voiCurrDate = this.getSfGetTimeCurrRO1();
                 Row voiCurrRw = voiCurrDate.first();
-                if(pmc.equalsIgnoreCase("1"))
-                {
                 rwRec.setAttribute("RecdDate", voiCurrRw.getAttribute("CurrDate"));
-                }
-                else if(pmc.equalsIgnoreCase("2"))
-                {
-                    rwRec.setAttribute("RecdDate",voiRecDual.getCurrentRow().getAttribute("ReceivedDateT"));
-                }
                 rwRec.setAttribute("ModifiedBy",user_code);
                 java.sql.Timestamp datetime = new java.sql.Timestamp(System.currentTimeMillis());
                 rwRec.setAttribute("ModifiedDate", datetime);
@@ -36106,27 +36064,27 @@ System.out.println("rs11.getString(\"SHIP_VILLAGE\") "+rs11.getString("SHIP_VILL
     public ViewObjectImpl getClaimDocumentLoadingStatusReportExcelRO1() {
         return (ViewObjectImpl) findViewObject("ClaimDocumentLoadingStatusReportExcelRO1");
     }  
-   
-																			
-																								   
-																							 
-																 
-																			
-																						   
-																					
-																	 
-																			  
-									
-									
-									
-																						 
-																			  
-																	   
-																		
-																   
-																													   
-									  
-				 
+    public void filterCDLSReport(String compFA, Date invFromDateT,Date toDateT,String claimIdT,String vinT){
+                    Map session = ADFContext.getCurrent().getSessionScope();
+                    Integer principalMapCd = new Integer(session.get("principalMapCd").toString());
+                    Integer dealerMapCd = new Integer(session.get("dealerMapCd").toString());
+                    String loc = session.get("locCd").toString();
+                    String parent = session.get("parentGroupCd").toString();
+                    ViewObjectImpl vo = this.getClaimDocumentLoadingStatusReportExcelRO1();
+                    vo.setNamedWhereClauseParam("bindP_dealer_MAP_CD", dealerMapCd);
+                    vo.setNamedWhereClauseParam("bindP_loc_cd", loc);
+                    vo.setNamedWhereClauseParam("bindP_parent_group", parent);
+                                    
+                                    
+                                    
+                                    vo.setNamedWhereClauseParam("bindP_COMP_FA", compFA);
+                    vo.setNamedWhereClauseParam("bindP_FROMDT", invFromDateT);
+                    vo.setNamedWhereClauseParam("bindP_TODT", toDateT);
+                    vo.setNamedWhereClauseParam("P_CLAIM_ID", claimIdT);
+                    vo.setNamedWhereClauseParam("P_INV_VIN", vinT);
+                    System.out.println("HSRP Upload excel -> in ampl class , print select query is  " + vo.getQuery());
+                    vo.executeQuery();
+                }
 
 
     /**
@@ -36515,54 +36473,36 @@ System.out.println("rs11.getString(\"SHIP_VILLAGE\") "+rs11.getString("SHIP_VILL
     }
 
 
-	   
-											   
-							   
-	   
-												 
-																   
-	 
-
-	   
-												
-								
-	   
-												  
-																	
-	 
+    /**
+     * Container's getter for NEXAMISReportTO1.
+     * @return NEXAMISReportTO1
+     */
+    public ViewObjectImpl getNEXAMISReportTO1() {
+        return (ViewObjectImpl) findViewObject("NEXAMISReportTO1");
+    }
 
     /**
-     * Container's getter for CustomerBookingTVO1.
-     * @return CustomerBookingTVO1
+     * Container's getter for NEXAMISDealerLOV1.
+     * @return NEXAMISDealerLOV1
      */
-    public ViewObjectImpl getCustomerBookingTVO1() {
-        return (ViewObjectImpl) findViewObject("CustomerBookingTVO1");
+    public ViewObjectImpl getNEXAMISDealerLOV1() {
+        return (ViewObjectImpl) findViewObject("NEXAMISDealerLOV1");
     }
-    
-    
-    public void resetValuesOfIndentRadioButton()
-    {
-try {
-            ViewObjectImpl voi = this.getStIndentVO1();
-            StIndentVORowImpl rw = (StIndentVORowImpl) voi.getCurrentRow();
-            rw.setIndToDlr(null);
-            rw.setIndToDlr1(null);
-            rw.setDealerDesc(null);
-            rw.setIndOnLoc(null);
-            rw.setRaisedOnDesc(null);
-            rw.setReqdBy(null);
-            rw.setReqdByDesc(null);
-            rw.setModelCd(null);
-            rw.setModelDesc(null);
-            rw.setVariantCd(null);
-            rw.setNbVariantDesc(null);
-        } catch (Exception e) {
-            // TODO: Add catch code
-            e.printStackTrace();
-        }
-        
-        
+
+    /**
+     * Container's getter for NEXAMISRegionLOV1.
+     * @return NEXAMISRegionLOV1
+     */
+    public ViewObjectImpl getNEXAMISRegionLOV1() {
+        return (ViewObjectImpl) findViewObject("NEXAMISRegionLOV1");
     }
-        
+
+    /**
+     * Container's getter for NexaMISReportExcelRO1.
+     * @return NexaMISReportExcelRO1
+     */
+    public ViewObjectImpl getNexaMISReportExcelRO1() {
+        return (ViewObjectImpl) findViewObject("NexaMISReportExcelRO1");
+    }
 }
 
